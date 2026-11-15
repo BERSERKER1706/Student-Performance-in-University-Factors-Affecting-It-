@@ -1,0 +1,115 @@
+{
+  "n": 1155,
+  "cgpa_mean": 3.2724935064935066,
+  "cgpa_sd": 0.4812617179480453,
+  "corr": {
+    "social_hours": -0.086,
+    "age": -0.08,
+    "semester": -0.021,
+    "log_income": -0.004,
+    "skill_hours": 0.02,
+    "study_sessions": 0.032,
+    "study_hours": 0.042,
+    "english": 0.094,
+    "attendance": 0.251,
+    "prev_sgpa": 0.624
+  },
+  "ols": {
+    "n": 1115,
+    "r2_without_prior": 0.08587854221760705,
+    "r2_with_prior": 0.5807075265545882
+  },
+  "gbm": {
+    "r2_without_prior_mean": 0.046581135551968876,
+    "r2_without_prior_sd": 0.06618029217983501,
+    "r2_with_prior_mean": 0.6921505205473517,
+    "r2_with_prior_sd": 0.04502655037244725
+  },
+  "attendance_bins": {
+    "(0.0, 60.0]": 2.998,
+    "(60.0, 75.0]": 3.219,
+    "(75.0, 90.0]": 3.204,
+    "(90.0, 99.9]": 3.334,
+    "(99.9, 100.0]": 3.393
+  },
+  "top_ols_m1": {
+    "disability": 0.145,
+    "smartphone": 0.127,
+    "living_with": 0.091,
+    "english_score": 0.089,
+    "attendance": 0.089,
+    "learning_mode": 0.08
+  },
+  "group_gaps": {
+    "probation": {
+      "diff": -0.362,
+      "ci_lo": -0.434,
+      "ci_hi": -0.29
+    },
+    "suspension": {
+      "diff": -0.326,
+      "ci_lo": -0.467,
+      "ci_hi": -0.189
+    },
+    "disability": {
+      "diff": -0.177,
+      "ci_lo": -0.414,
+      "ci_hi": 0.035
+    },
+    "learning_mode": {
+      "diff": -0.102,
+      "ci_lo": -0.168,
+      "ci_hi": -0.037
+    },
+    "living_with": {
+      "diff": -0.082,
+      "ci_lo": -0.141,
+      "ci_hi": -0.029
+    },
+    "relationship": {
+      "diff": -0.07,
+      "ci_lo": -0.137,
+      "ci_hi": -0.003
+    },
+    "consultancy": {
+      "diff": -0.037,
+      "ci_lo": -0.096,
+      "ci_hi": 0.014
+    },
+    "health_issue": {
+      "diff": -0.033,
+      "ci_lo": -0.11,
+      "ci_hi": 0.039
+    },
+    "smartphone": {
+      "diff": -0.022,
+      "ci_lo": -0.255,
+      "ci_hi": 0.242
+    },
+    "own_pc": {
+      "diff": -0.015,
+      "ci_lo": -0.126,
+      "ci_hi": 0.103
+    },
+    "cocurricular": {
+      "diff": 0.004,
+      "ci_lo": -0.051,
+      "ci_hi": 0.059
+    },
+    "uni_transport": {
+      "diff": 0.012,
+      "ci_lo": -0.039,
+      "ci_hi": 0.065
+    },
+    "gender": {
+      "diff": 0.024,
+      "ci_lo": -0.028,
+      "ci_hi": 0.078
+    },
+    "scholarship": {
+      "diff": 0.223,
+      "ci_lo": 0.171,
+      "ci_hi": 0.276
+    }
+  }
+}

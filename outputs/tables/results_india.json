@@ -1,0 +1,77 @@
+{
+  "n": 3500,
+  "n_complete": 3213,
+  "branch_means": {
+    "AI": 6.867,
+    "CE": 6.765,
+    "CSE": 6.951,
+    "DS": 6.966,
+    "ECE": 6.923,
+    "EE": 6.793,
+    "ME": 6.764
+  },
+  "mixed": {
+    "icc_institution": 0.04861766017087978,
+    "coverage": 0.9444444444444444,
+    "n_effects": 18,
+    "residual_sd": 0.5594811390679321,
+    "true_noise_sd": 0.55
+  },
+  "study_slopes": {
+    "ME": {
+      "slope": 0.191,
+      "ci_lo": 0.138,
+      "ci_hi": 0.243,
+      "true": 0.24
+    },
+    "CE": {
+      "slope": 0.208,
+      "ci_lo": 0.148,
+      "ci_hi": 0.268,
+      "true": 0.2
+    },
+    "CSE": {
+      "slope": 0.221,
+      "ci_lo": 0.176,
+      "ci_hi": 0.266,
+      "true": 0.2
+    },
+    "EE": {
+      "slope": 0.25,
+      "ci_lo": 0.191,
+      "ci_hi": 0.309,
+      "true": 0.3
+    },
+    "AI": {
+      "slope": 0.27,
+      "ci_lo": 0.199,
+      "ci_hi": 0.341,
+      "true": 0.28
+    },
+    "DS": {
+      "slope": 0.308,
+      "ci_lo": 0.239,
+      "ci_hi": 0.377,
+      "true": 0.28
+    },
+    "ECE": {
+      "slope": 0.32,
+      "ci_lo": 0.273,
+      "ci_hi": 0.368,
+      "true": 0.3
+    }
+  },
+  "interaction_F_p": 0.0025929423550719805,
+  "gbm_r2": {
+    "mean": 0.5971642176804552,
+    "sd": 0.034322824327111076
+  },
+  "ols_r2_cluster_model": 0.6297082198481985,
+  "top_importance": {
+    "Class 12 %": 0.507,
+    "Attendance %": 0.212,
+    "Study hours / day": 0.132,
+    "Stress (0-10)": 0.047,
+    "Recreational screen h": 0.022
+  }
+}
