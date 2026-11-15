@@ -1,56 +1,106 @@
-# Performance of University Students and the Factors Affecting It
+# Student Performance in University: Factors Affecting It
 
-A two-part Python project on the question *"how do students perform at university, and what affects it?"*
+A Python project that asks what actually explains a university student's CGPA, and how much of it can be predicted. It has two parts:
 
-| | Part A: real data | Part B: simulated data |
+- **Part A: real survey data.** A cleaned survey of 1,155 students, analysed with correlations, group comparisons, regression and machine-learning models.
+- **Part B: simulated Indian multi-branch cohort.** A clearly labelled synthetic dataset of 3,500 students with *known, planted* effects. It checks whether the statistical methods can recover the truth, and lets us compare branches and institution tiers that the real survey does not cover.
+
+This is a follow-up to the earlier BKBIET data-visualization report, which used purely simulated data. Here the real-data findings stand on their own, and the simulated data is kept separate and labelled.
+
+---
+
+## Key results
+
+### Part A: real data (n = 1,155, mean CGPA 3.27)
+
+| Model | R² without previous SGPA | R² with previous SGPA |
 |---|---|---|
-| **Data** | Real survey of 1,194 B.Sc. CSE students (1,155 after cleaning). 4.0 CGPA scale. Public Kaggle dataset, CC BY-NC-SA 4.0, mirrored in the `edupulse-datasets` GitHub repo. | 3,500 **simulated** students, 12 institutions in 3 tiers, 7 branches (CSE, DS, AI, EE, ECE, ME, CE), 10-point CGPA. |
-| **Question** | What is actually associated with CGPA, and how much can be predicted? | Do standard methods recover known effects, and does the payoff of study time differ by branch? |
-| **Status** | Real students, but self-reported, one university, **not Indian** (the 4.0 scale and "H.S.C." wording point to a South Asian university outside India). | Effects are **assumptions** declared in `src/config.py`. Nothing in Part B is a finding about real students. |
+| Linear regression (OLS) | 0.09 | 0.58 |
+| Gradient boosting (cross-validated) | 0.05 | 0.69 |
 
-## Why the hybrid
-I could not find a *verified, real* Indian multi-branch dataset reachable from the build environment. The candidates I did find (`engineering_student_journey`, `student_performance_tamilnadu`) behave like random data: GPA correlates about 0.00 with everything. The repo's own README says provenance is unverified. So the project uses the one real dataset with genuine signal for the real analysis, and a clearly labelled simulation for the Indian multi-branch design. **If you obtain a real Indian dataset, `src/analysis_india.py` runs on any CSV with the same column names.**
+- **Past performance dominates.** Adding previous-semester SGPA lifts explained variance from under 10% to 58–69%. Without it, the surveyed habits and background factors explain very little.
+- **Without prior SGPA**, the significant predictors are attendance (+), English score (+), social hours (−) and living arrangement. Several other factors were not distinguishable from zero.
+- **With prior SGPA** controlled, prior SGPA is the largest effect (coef ≈ 0.40). English score, family income (log), semester, relationship status, age (−) and consultancy (−) also come out significant.
+- **Self-reported daily study hours showed no significant relationship** with CGPA in either model (p ≈ 0.6 and 0.7).
 
-## Run it
-```bash
-pip install -r requirements.txt
-python run_all.py        # about 25 seconds; writes outputs/figures and outputs/tables
+### Part B: simulated cohort (n = 3,500, 10 institutions)
+
+| Check | Result |
+|---|---|
+| Planted effects recovered inside the 95% interval | **94%** (17 of 18) |
+| Prediction R² (gradient boosting) | 0.60 |
+| Share of CGPA variance between institutions (ICC) | 0.05 |
+
+The one effect outside its interval was study hours per day (true 0.20, estimated 0.246). Class 12 %, attendance, stress, screen time and sleep were recovered very closely. Branch effects were estimated relative to EE (for example, DS and CSE above EE, ME below).
+
+> **Caution:** Part B conclusions describe what the *method* can detect in synthetic data. They are not evidence about real students.
+
+---
+
+## Data cleaning (Part A)
+
+| Step | Rows affected |
+|---|---|
+| Raw rows | 1,194 |
+| Attendance missing or invalid, set to NaN | 1 |
+| Social hours above 16 h/day, set to NaN | 1 |
+| Semester above 12, set to NaN | 36 |
+| CGPA ≤ 0 removed (no graded work yet) | 39 |
+| **Clean rows** | **1,155** |
+
+The full log is saved to `A_cleaning_log.csv`.
+
+---
+
+## Project structure
+
+```
+student_performance_project/
+├── src/
+│   ├── config.py          # paths (FIG, TAB output folders)
+│   ├── cleaning.py        # load_and_clean(): cleaning pipeline + log
+│   ├── analysis_real.py   # Part A: correlations, group gaps, OLS, GBM, dose-response
+│   ├── simulate.py        # Part B: synthetic cohort generator
+│   └── analysis_india.py  # Part B: mixed model, recovery check, GBM
+├── Students_perfromnace.ipynb   # runs everything end to end
+├── figures/               # A1–A5, B1–B4 charts (PNG)
+└── tables/                # CSV outputs (cleaning log, OLS coefficients, recovered vs true)
 ```
 
-## Part A findings (real CSE survey, n = 1,155)
-- **Prior results dominate.** Previous-semester SGPA: Spearman ρ = 0.62 with CGPA.
-- **Attendance is the one habit that stands out.** Mean CGPA is 3.00 for <60% attendance and 3.39 for 100% (ρ = 0.25). After controlling for prior SGPA the adjusted effect shrinks from 0.089 to 0.023 CGPA per SD (95% CI 0.001 to 0.044), so most of the attendance link is shared with earlier performance.
-- **Study hours barely register.** ρ = 0.04, adjusted effect 0.008 per SD (95% CI −0.024 to 0.040). This is self-reported time, not quality of study.
-- **Habits alone predict little.** Cross-validated R² without prior SGPA: gradient boosting 0.05 (±0.07), OLS 0.09 in-sample. With prior SGPA: 0.69 and 0.58.
-- **Probation (−0.36), suspension (−0.33) and merit scholarship (+0.22) are results of performance, not causes**, so they are shown separately and kept out of the factor models.
-- **Social media's sign flips.** Unadjusted −0.040 per SD, but +0.028 after controlling for prior SGPA. Treat it as unresolved, not as a finding.
-- Preferring online learning (−0.10) and living away from family (−0.08) show gaps, and both weaken after adjusting for prior SGPA.
+> Folder names for `figures/` and `tables/` follow `src/config.py` (`FIG`, `TAB`). Adjust this tree if your layout differs.
 
-## Part B findings (simulated, n = 3,500)
-- **Recovery check:** a mixed model (random intercept per institution) puts **17 of 18** planted effects inside its 95% CI. The one miss is study hours (estimate 0.25 vs planted 0.20). That is partly a comparison artifact: the true average slope across branches is about 0.27 because the planted branch interaction raises it, and the main-effect model does not include it.
-- **Study time pays off differently by branch** (interaction test p = 0.003). The estimates run from about 0.19 (ME) to 0.32 (ECE) CGPA per SD, matching the planted pattern. This was built in, so it shows the method works, not that engineering branches behave this way.
-- Institution explains about 5% of CGPA variance (ICC 0.049).
-- Gradient boosting reaches CV R² ≈ 0.60. Class 12 %, attendance and study hours lead the permutation importances.
+## Outputs
+
+**Figures:** `A1_correlations`, `A2_group_gaps`, `A3_regression`, `A4_importance`, `A5_dose_response` (real data); `B1_branch_cgpa`, `B2_recovered_vs_true`, `B3_study_by_branch`, `B4_importance` (simulated).
+
+**Tables:** `A_cleaning_log.csv`, `A_ols_coefficients.csv` (coefficients, 95% CIs and p-values with and without prior SGPA), `B_recovered_vs_true.csv`.
+
+## Methods
+
+- **Part A:** correlation analysis, group gap comparisons, OLS regression (two specifications: with and without previous SGPA), gradient-boosting prediction with cross-validation, feature importance and dose-response curves.
+- **Part B:** a mixed-effects model with institution as a grouping factor (reports ICC and checks 95% interval coverage against the planted effects), gradient-boosting prediction and feature importance.
+
+## How to run
+
+1. Install requirements (Python 3.10+):
+   ```bash
+   pip install pandas numpy scipy statsmodels scikit-learn matplotlib
+   ```
+2. Open `Students_perfromnace.ipynb` in Jupyter. The first cells locate the project root (the folder containing `src/`), so it works from any launch directory.
+3. Run all cells in order. Figures and tables are written to the output folders.
 
 ## Limitations
-- Part A is observational and self-reported. Associations are not causes.
-- Part A is one program at one university, so it cannot support claims about Indian universities or other branches.
-- Part B's numbers come from my chosen assumptions. Branch offsets in particular are not evidence about real branch differences.
-- Missing data is handled by listwise deletion in the models and median imputation in the machine-learning step.
 
-## Layout
-```
-run_all.py            one-command pipeline
-src/config.py         paths, seed, planted effects for the simulation
-src/cleaning.py       Part A cleaning, with a cleaning log
-src/analysis_real.py  Part A: correlations, group gaps, OLS (robust SE), gradient boosting, permutation importance
-src/simulate.py       Part B generator
-src/analysis_india.py Part B: mixed model, recovery check, branch heterogeneity, importance
-data/raw              the real survey CSV
-data/processed        cleaned survey, simulated cohort
-outputs/figures       9 PNG charts (A1-A5, B1-B4)
-outputs/tables        CSV and JSON results
-```
+- Survey data is self-reported and cross-sectional, so results show association, not causation.
+- Study hours are self-reported and may be noisy, which can weaken their apparent effect.
+- Part A explains little without prior SGPA, so important drivers (prior ability, teaching quality, motivation and so on) are not captured by the survey.
+- Part B is synthetic by construction; its effects are known because they were planted.
 
-## Data sources
-- Student Academic Performance Dataset for ML (Kaggle, dhruvb2028), via the [edupulse-datasets](https://github.com/thinkter/edupulse-datasets) repository. License CC BY-NC-SA 4.0: **non-commercial use with attribution**.
+## Tech stack
+
+Python, pandas, NumPy, SciPy, statsmodels, scikit-learn, Matplotlib, Jupyter.
+
+## Author
+
+**Sir Skull** — B.Tech Computer Science, B.K. Birla Institute of Engineering and Technology, Pilani
+GitHub: [BERSERKER1706](https://github.com/BERSERKER1706)
